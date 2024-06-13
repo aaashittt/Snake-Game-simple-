@@ -1,3 +1,4 @@
+
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -8,6 +9,13 @@ canvas.height = window.innerHeight;
 const boundaryPadding = 2 * gridSize; // Padding to ensure food appears within visible area
 
 const scoreTitleHeight = 50; // Height of score and title area
+
+const snakeBoundary = {
+    minX: 0,
+    minY: scoreTitleHeight,
+    maxX: canvas.width - gridSize,
+    maxY: canvas.height - gridSize
+};
 
 let snake = [
     { x: gridSize * 5, y: gridSize * 5 },
@@ -42,24 +50,18 @@ function gameLoop() {
 function update() {
     const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
 
-    // Wrap around horizontally
-    if (head.x >= canvas.width) {
-        head.x = 0;
-    } else if (head.x < 0) {
-        head.x = canvas.width - gridSize;
-    }
-    
-    // Vertical wrapping logic
-    if (head.y >= canvas.height - scoreTitleHeight) {
-        head.y = 0; // Wrap from bottom to top
-    } else if (head.y < 0) {
-        head.y = canvas.height - scoreTitleHeight - gridSize; // Wrap from top to bottom
+    // Check if snake hits the boundary
+    if (head.x < snakeBoundary.minX || head.x >= snakeBoundary.maxX ||
+        head.y < snakeBoundary.minY || head.y >= snakeBoundary.maxY) {
+        resetGame();
+        return;
     }
 
     // Check collision with obstacles or itself
     if (snake.slice(1).some(segment => segment.x === head.x && segment.y === head.y) ||
         obstacles.some(obstacle => obstacle.x === head.x && obstacle.y === head.y)) {
         resetGame();
+        return;
     }
 
     // Check if the snake eats the food
