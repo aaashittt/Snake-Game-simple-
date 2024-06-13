@@ -146,3 +146,6 @@ function resetGame() {
 // Start the game loop
 gameLoop();
 
+
+
+
