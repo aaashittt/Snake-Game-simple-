@@ -126,4 +126,42 @@ document.addEventListener('keydown', e => {
     }
 });
 
+// Touch controls
+let touchStartX = 0;
+let touchStartY = 0;
+let touchEndX = 0;
+let touchEndY = 0;
+
+canvas.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+});
+
+canvas.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    handleTouch();
+});
+
+function handleTouch() {
+    const diffX = touchEndX - touchStartX;
+    const diffY = touchEndY - touchStartY;
+    
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+        // Horizontal swipe
+        if (diffX > 0 && direction.x === 0) {
+            direction = { x: gridSize, y: 0 }; // Swipe right
+        } else if (diffX < 0 && direction.x === 0) {
+            direction = { x: -gridSize, y: 0 }; // Swipe left
+        }
+    } else {
+        // Vertical swipe
+        if (diffY > 0 && direction.y === 0) {
+            direction = { x: 0, y: gridSize }; // Swipe down
+        } else if (diffY < 0 && direction.y === 0) {
+            direction = { x: 0, y: -gridSize }; // Swipe up
+        }
+    }
+}
+
 gameLoop();
