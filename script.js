@@ -229,4 +229,3 @@ function showInstructions() {
 
 showInstructions();
 gameLoop();
-
