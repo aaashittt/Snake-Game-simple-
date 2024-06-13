@@ -31,6 +31,7 @@ let food = {
 let direction = { x: gridSize, y: 0 };
 let score = 0;
 let speed = 100;
+let level = 1;
 let obstacles = [
     { x: gridSize * 10, y: gridSize * 10 },
     { x: gridSize * 15, y: gridSize * 15 }
@@ -67,8 +68,11 @@ function update() {
     // Check if the snake eats the food
     if (head.x === food.x && head.y === food.y) {
         score++;
-        speed = Math.max(50, speed - 5); // Increase speed
         eatSound.play();
+        if (score % 5 === 0) { // Increase level every 5 points
+            level++;
+            speed = Math.max(50, speed - 10); // Increase speed
+        }
         generateFood();
     } else {
         snake.pop(); // Remove the tail segment
@@ -97,6 +101,7 @@ function draw() {
     ctx.fillStyle = 'black';
     ctx.font = '20px Arial';
     ctx.fillText(`Score: ${score}`, 10, 30);
+    ctx.fillText(`Level: ${level}`, 10, 60); // Display current level
 }
 
 function resetGame() {
@@ -107,6 +112,7 @@ function resetGame() {
     ];
     direction = { x: gridSize, y: 0 };
     score = 0;
+    level = 1;
     speed = 100;
     backgroundMusic.play();
 }
@@ -177,27 +183,6 @@ function handleTouch() {
 // Generate random position for food
 function getRandomFoodPosition(max) {
     return gridSize * Math.floor(Math.random() * (max / gridSize));
-}
-
-// Ensure food doesn't appear on snake or obstacles
-function generateFood() {
-    let newFood;
-    do {
-        newFood = {
-            x: getRandomFoodPosition(canvas.width - boundaryPadding),
-            y: getRandomFoodPosition(canvas.height - boundaryPadding - scoreTitleHeight)
-        };
-    } while (isFoodOnSnake(newFood) || isFoodOnObstacle(newFood));
-
-    food = newFood;
-}
-
-function isFoodOnSnake(pos) {
-    return snake.some(segment => segment.x === pos.x && segment.y === pos.y);
-}
-
-function isFoodOnObstacle(pos) {
-    return obstacles.some(obstacle => obstacle.x === pos.x && obstacle.y === pos.y);
 }
 
 // Display the instructions
