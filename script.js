@@ -19,6 +19,21 @@ let direction = { x: gridSize, y: 0 }; // Initial direction (right)
 const titlePosition = { x: 10, y: 10 };
 const scorePosition = { x: 10, y: 40 };
 
+// Instruction message
+const instructionMessage = 'How to play:\n\n' +
+                           'On computers: Use arrow keys to move the snake.\n\n' +
+                           'On mobile phones: Swipe on the screen in the direction you want the snake to move.\n\n' +
+                           'Eat the red squares to grow and score points. Avoid running into the walls or yourself!';
+
+// Disable touch scrolling
+document.body.addEventListener('touchstart', e => {
+    e.preventDefault();
+});
+
+document.body.addEventListener('touchmove', e => {
+    e.preventDefault();
+});
+
 // Game loop
 function gameLoop() {
     update();
@@ -42,16 +57,6 @@ function update() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw score
-    ctx.fillStyle = 'black';
-    ctx.font = '18px Arial';
-    ctx.fillText(`Score: ${score}`, scorePosition.x, scorePosition.y);
-
-    // Draw title
-    ctx.fillStyle = 'black';
-    ctx.font = '24px Arial';
-    ctx.fillText('Snake Game', titlePosition.x, titlePosition.y);
-
     // Draw snake
     ctx.fillStyle = 'green';
     snake.forEach(segment => {
@@ -61,6 +66,23 @@ function draw() {
     // Draw food
     ctx.fillStyle = 'red';
     ctx.fillRect(food.x, food.y, gridSize, gridSize);
+
+    // Draw title
+    ctx.fillStyle = 'black';
+    ctx.font = '24px Arial';
+    ctx.fillText('Snake Game', titlePosition.x, titlePosition.y);
+
+    // Draw score
+    ctx.fillStyle = 'black';
+    ctx.font = '18px Arial';
+    ctx.fillText(`Score: ${score}`, scorePosition.x, scorePosition.y);
+
+    // Draw instruction message
+    ctx.fillStyle = 'black';
+    ctx.font = '14px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText(instructionMessage, canvasWidth / 2, canvasHeight / 2);
+    ctx.textAlign = 'left'; // Reset text alignment
 }
 
 // Move snake
@@ -74,8 +96,12 @@ function moveSnake() {
     }
 }
 
-// Handle arrow key presses
-document.addEventListener('keydown', e => {
+// Handle arrow key presses and swipe gestures
+document.addEventListener('keydown', handleKeyDown);
+canvas.addEventListener('touchstart', handleTouchStart);
+canvas.addEventListener('touchmove', handleTouchMove);
+
+function handleKeyDown(e) {
     switch (e.key) {
         case 'ArrowUp':
             if (direction.y !== gridSize) {
@@ -98,7 +124,45 @@ document.addEventListener('keydown', e => {
             }
             break;
     }
-});
+}
+
+let touchStartX = 0;
+let touchStartY = 0;
+let touchEndX = 0;
+let touchEndY = 0;
+
+function handleTouchStart(e) {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+}
+
+function handleTouchMove(e) {
+    touchEndX = e.touches[0].clientX;
+    touchEndY = e.touches[0].clientY;
+
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Horizontal swipe
+        if (deltaX > 0 && direction.x !== -gridSize) {
+            direction = { x: gridSize, y: 0 };
+        } else if (deltaX < 0 && direction.x !== gridSize) {
+            direction = { x: -gridSize, y: 0 };
+        }
+    } else {
+        // Vertical swipe
+        if (deltaY > 0 && direction.y !== -gridSize) {
+            direction = { x: 0, y: gridSize };
+        } else if (deltaY < 0 && direction.y !== gridSize) {
+            direction = { x: 0, y: -gridSize };
+        }
+    }
+
+    // Reset touch start coordinates
+    touchStartX = touchEndX;
+    touchStartY = touchEndY;
+}
 
 // Generate random position for food
 function getRandomFoodPosition(max) {
@@ -134,39 +198,22 @@ function checkCollision() {
     }
 
     // Check collision with title and score
-    const titleRect = {
-        x: titlePosition.x,
-        y: titlePosition.y - 24, // Adjust for font height
-        width: ctx.measureText('Snake Game').width,
-        height: 24
-    };
-    const scoreRect = {
-        x: scorePosition.x,
-        y: scorePosition.y - 18, // Adjust for font height
-        width: ctx.measureText(`Score: ${score}`).width,
-        height: 18
-    };
+    const titleWidth = ctx.measureText('Snake Game').width;
+    const titleHeight = 24; // Adjust according to font size
+    const scoreWidth = ctx.measureText(`Score: ${score}`).width;
+    const scoreHeight = 18; // Adjust according to font size
 
-    const snakeHeadRect = {
-        x: snake[0].x,
-        y: snake[0].y,
-        width: gridSize,
-        height: gridSize
-    };
+    if (snake[0].x >= titlePosition.x && snake[0].x <= titlePosition.x + titleWidth &&
+        snake[0].y >= titlePosition.y - titleHeight && snake[0].y <= titlePosition.y) {
+        return true;
+    }
 
-    if (rectIntersect(snakeHeadRect, titleRect) || rectIntersect(snakeHeadRect, scoreRect)) {
+    if (snake[0].x >= scorePosition.x && snake[0].x <= scorePosition.x + scoreWidth &&
+        snake[0].y >= scorePosition.y - scoreHeight && snake[0].y <= scorePosition.y) {
         return true;
     }
 
     return false;
-}
-
-// Rectangle intersection check
-function rectIntersect(r1, r2) {
-    return !(r2.x > (r1.x + r1.width) ||
-             (r2.x + r2.width) < r1.x ||
-             r2.y > (r1.y + r1.height) ||
-             (r2.y + r2.height) < r1.y);
 }
 
 // Game over
