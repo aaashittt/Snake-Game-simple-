@@ -8,6 +8,7 @@ canvas.height = window.innerHeight;
 const boundaryPadding = 2 * gridSize; // Padding to ensure food appears within visible area
 
 const scoreTitleHeight = 50; // Height of score and title area
+const scorePadding = 10; // Padding for score text
 
 let snake = [
     { x: gridSize * 5, y: gridSize * 5 },
@@ -17,18 +18,17 @@ let snake = [
 
 let food = {
     x: getRandomFoodPosition(canvas.width - boundaryPadding),
-    y: getRandomFoodPosition(canvas.height - boundaryPadding)
+    y: getRandomFoodPosition(canvas.height - boundaryPadding - scoreTitleHeight)
 };
 
 let direction = { x: gridSize, y: 0 };
 let score = 0;
 let speed = 100;
-let obstacles = [
-    { x: gridSize * 10, y: gridSize * 10 },
-    { x: gridSize * 15, y: gridSize * 15 }
-];
+let level = 1;
+let obstacles = generateObstacles(level);
 
 const eatSound = document.getElementById('eatSound');
+const gameOverSound = document.getElementById('gameOverSound');
 const backgroundMusic = document.getElementById('backgroundMusic');
 
 backgroundMusic.play();
@@ -59,7 +59,8 @@ function update() {
     // Check collision with obstacles or itself
     if (snake.slice(1).some(segment => segment.x === head.x && segment.y === head.y) ||
         obstacles.some(obstacle => obstacle.x === head.x && obstacle.y === head.y)) {
-        resetGame();
+        gameOver();
+        return;
     }
 
     // Check if the snake eats the food
@@ -91,10 +92,15 @@ function draw() {
         ctx.fillRect(obstacle.x, obstacle.y, gridSize, gridSize);
     });
 
-    // Increase score size
+    // Display score in top right corner
     ctx.fillStyle = 'black';
     ctx.font = '20px Arial';
-    ctx.fillText(`Score: ${score}`, 10, 30);
+    ctx.textAlign = 'right';
+    ctx.fillText(`Score: ${score}`, canvas.width - scorePadding, scoreTitleHeight - scorePadding);
+
+    // Display level in top left corner
+    ctx.textAlign = 'left';
+    ctx.fillText(`Level: ${level}`, scorePadding, scoreTitleHeight - scorePadding);
 }
 
 function resetGame() {
@@ -106,7 +112,15 @@ function resetGame() {
     direction = { x: gridSize, y: 0 };
     score = 0;
     speed = 100;
+    level = 1;
+    obstacles = generateObstacles(level);
     backgroundMusic.play();
+}
+
+function gameOver() {
+    gameOverSound.play();
+    alert(`Game Over! Your score: ${score}`);
+    resetGame();
 }
 
 // Prevent default arrow key behavior
@@ -177,6 +191,21 @@ function getRandomFoodPosition(max) {
     return gridSize * Math.floor(Math.random() * (max / gridSize));
 }
 
+// Generate obstacles based on level
+function generateObstacles(level) {
+    const obstacles = [];
+    const numObstacles = level * 2; // Increase number of obstacles with level
+    
+    for (let i = 0; i < numObstacles; i++) {
+        obstacles.push({
+            x: getRandomFoodPosition(canvas.width - boundaryPadding),
+            y: getRandomFoodPosition(canvas.height - boundaryPadding - scoreTitleHeight)
+        });
+    }
+    
+    return obstacles;
+}
+
 // Ensure food doesn't appear on snake or obstacles
 function generateFood() {
     let newFood;
@@ -229,4 +258,3 @@ function showInstructions() {
 
 showInstructions();
 gameLoop();
-
