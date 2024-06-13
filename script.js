@@ -5,6 +5,8 @@ const gridSize = 20;
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+const boundaryPadding = 2 * gridSize; // Padding to ensure food appears within visible area
+
 let snake = [
     { x: gridSize * 5, y: gridSize * 5 },
     { x: gridSize * 4, y: gridSize * 5 },
@@ -12,8 +14,8 @@ let snake = [
 ];
 
 let food = {
-    x: gridSize * Math.floor(Math.random() * (canvas.width / gridSize)),
-    y: gridSize * Math.floor(Math.random() * (canvas.height / gridSize))
+    x: getRandomFoodPosition(canvas.width - boundaryPadding),
+    y: getRandomFoodPosition(canvas.height - boundaryPadding)
 };
 
 let direction = { x: gridSize, y: 0 };
@@ -62,10 +64,7 @@ function update() {
         score++;
         speed = Math.max(50, speed - 5); // Increase speed
         eatSound.play();
-        food = {
-            x: gridSize * Math.floor(Math.random() * (canvas.width / gridSize)),
-            y: gridSize * Math.floor(Math.random() * (canvas.height / gridSize))
-        };
+        generateFood();
     } else {
         snake.pop(); // Remove the tail segment
     }
@@ -170,6 +169,32 @@ function handleTouch() {
     }
 }
 
+// Generate random position for food
+function getRandomFoodPosition(max) {
+    return gridSize * Math.floor(Math.random() * (max / gridSize));
+}
+
+// Ensure food doesn't appear on snake or obstacles
+function generateFood() {
+    let newFood;
+    do {
+        newFood = {
+            x: getRandomFoodPosition(canvas.width - boundaryPadding),
+            y: getRandomFoodPosition(canvas.height - boundaryPadding)
+        };
+    } while (isFoodOnSnake(newFood) || isFoodOnObstacle(newFood));
+
+    food = newFood;
+}
+
+function isFoodOnSnake(pos) {
+    return snake.some(segment => segment.x === pos.x && segment.y === pos.y);
+}
+
+function isFoodOnObstacle(pos) {
+    return obstacles.some(obstacle => obstacle.x === pos.x && obstacle.y === pos.y);
+}
+
 // Display the instructions
 function showInstructions() {
     const instructions = document.createElement('div');
@@ -201,3 +226,4 @@ function showInstructions() {
 
 showInstructions();
 gameLoop();
+
