@@ -1,3 +1,4 @@
+
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -133,11 +134,17 @@ let touchEndX = 0;
 let touchEndY = 0;
 
 canvas.addEventListener('touchstart', e => {
+    e.preventDefault(); // Prevent scrolling
     touchStartX = e.changedTouches[0].screenX;
     touchStartY = e.changedTouches[0].screenY;
 });
 
+canvas.addEventListener('touchmove', e => {
+    e.preventDefault(); // Prevent scrolling
+});
+
 canvas.addEventListener('touchend', e => {
+    e.preventDefault(); // Prevent scrolling
     touchEndX = e.changedTouches[0].screenX;
     touchEndY = e.changedTouches[0].screenY;
     handleTouch();
