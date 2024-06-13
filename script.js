@@ -2,7 +2,7 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-const gridSize = 20;
+const gridSize = 200;
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
