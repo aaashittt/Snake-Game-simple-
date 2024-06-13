@@ -27,10 +27,12 @@ let speed = 100;
 let level = 1;
 let obstacles = generateObstacles(level);
 
-const eatSound = document.getElementById('eatSound');
-const gameOverSound = document.getElementById('gameOverSound');
-const backgroundMusic = document.getElementById('backgroundMusic');
+const eatSound = new Audio('eat.wav'); // Replace with your eat sound file
+const gameOverSound = new Audio('gameover.wav'); // Replace with your game over sound file
+const backgroundMusic = new Audio('background.mp3'); // Replace with your background music file
 
+backgroundMusic.loop = true;
+backgroundMusic.volume = 0.5;
 backgroundMusic.play();
 
 function gameLoop() {
@@ -69,6 +71,12 @@ function update() {
         speed = Math.max(50, speed - 5); // Increase speed
         eatSound.play();
         generateFood();
+
+        // Check for level up (every 5 points)
+        if (score % 5 === 0) {
+            level++;
+            obstacles = generateObstacles(level);
+        }
     } else {
         snake.pop(); // Remove the tail segment
     }
@@ -194,7 +202,7 @@ function getRandomFoodPosition(max) {
 // Generate obstacles based on level
 function generateObstacles(level) {
     const obstacles = [];
-    const numObstacles = level * 2; // Increase number of obstacles with level
+    const numObstacles = level * 5; // Increase number of obstacles with level
     
     for (let i = 0; i < numObstacles; i++) {
         obstacles.push({
@@ -244,17 +252,11 @@ function showInstructions() {
     instructions.style.zIndex = '1000';
     instructions.innerHTML = `
         <p>Use arrow keys or swipe to move the snake</p>
+        <p>Increase score by eating food</p>
+        <p>Avoid obstacles and collision with the snake itself</p>
+        <p>Level up every 5 points!</p>
         <p>In this world, everybody is a winner. Enjoy!</p>
     `;
     document.body.appendChild(instructions);
 
-    // Remove the instructions after 5 seconds
-    setTimeout(() => {
-        instructions.style.transition = 'opacity 1s';
-        instructions.style.opacity = '0';
-        setTimeout(() => instructions.remove(), 1000);
-    }, 5000);
-}
-
-showInstructions();
-gameLoop();
+    // Remove the instructions after 8 seconds
