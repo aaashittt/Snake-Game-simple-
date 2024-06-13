@@ -1,130 +1,98 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+let canvasWidth = window.innerWidth;
+let canvasHeight = window.innerHeight;
 
+canvas.width = canvasWidth;
+canvas.height = canvasHeight;
 
 const gridSize = 20;
-const boundaryPadding = 2 * gridSize; // Padding to ensure food appears within visible area
-
-let snake = [
-    { x: gridSize * 5, y: gridSize * 5 },
-    { x: gridSize * 4, y: gridSize * 5 },
-    { x: gridSize * 3, y: gridSize * 5 }
-];
-
-let food = {
-    x: getRandomFoodPosition(canvas.width - boundaryPadding),
-    y: getRandomFoodPosition(canvas.height - boundaryPadding)
-};
-
-let direction = { x: gridSize, y: 0 };
+let snake = [{ x: 100, y: 100 }];
+let food = { x: 200, y: 200 };
 let score = 0;
+let level = 1;
 let speed = 100;
+let direction = { x: gridSize, y: 0 }; // Initial direction (right)
 
-const eatSound = new Audio('eat.wav'); // Replace with your eat sound file
-const gameOverSound = new Audio('gameover.wav'); // Replace with your game over sound file
-const backgroundMusic = new Audio('background.mp3'); // Replace with your background music file
-
-backgroundMusic.loop = true;
-backgroundMusic.volume = 0.5;
-backgroundMusic.play();
-
+// Game loop
 function gameLoop() {
     update();
     draw();
     setTimeout(gameLoop, speed);
 }
 
+// Update game state
 function update() {
-    const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
-
-    // Wrap around horizontally
-    if (head.x >= canvas.width) {
-        head.x = 0;
-    } else if (head.x < 0) {
-        head.x = canvas.width - gridSize;
+    moveSnake();
+    if (checkCollision()) {
+        resetGame();
     }
-    
-    // Wrap around vertically
-    if (head.y >= canvas.height) {
-        head.y = 0;
-    } else if (head.y < 0) {
-        head.y = canvas.height - gridSize;
+    if (snake[0].x === food.x && snake[0].y === food.y) {
+        eatFood();
     }
-
-    // Check collision with itself
-    if (snake.slice(1).some(segment => segment.x === head.x && segment.y === head.y)) {
-        gameOver();
-        return;
-    }
-
-    // Check if the snake eats the food
-    if (head.x === food.x && head.y === food.y) {
-        score++;
-        speed = Math.max(50, speed - 5); // Increase speed
-        eatSound.play();
-        generateFood();
-    } else {
-        snake.pop(); // Remove the tail segment
-    }
-
-    snake.unshift(head); // Add new head segment
 }
 
+// Draw game elements
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = 'red';
-    ctx.fillRect(food.x, food.y, gridSize, gridSize);
+    // Draw title
+    ctx.fillStyle = 'black';
+    ctx.font = '24px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Snake Game', canvasWidth / 2, 30);
 
+    // Draw score
+    ctx.fillStyle = 'black';
+    ctx.font = '18px Arial';
+    ctx.textAlign = 'right';
+    ctx.fillText(`Score: ${score}`, canvasWidth - 20, 30);
+
+    // Draw snake
     ctx.fillStyle = 'green';
     snake.forEach(segment => {
         ctx.fillRect(segment.x, segment.y, gridSize, gridSize);
     });
 
-    // Display score in top right corner
-    ctx.fillStyle = 'black';
-    ctx.font = '20px Arial';
-    ctx.textAlign = 'right';
-    ctx.fillText(`Score: ${score}`, canvas.width - 20, 20);
+    // Draw food
+    ctx.fillStyle = 'red';
+    ctx.fillRect(food.x, food.y, gridSize, gridSize);
 }
 
-function resetGame() {
-    snake = [
-        { x: gridSize * 5, y: gridSize * 5 },
-        { x: gridSize * 4, y: gridSize * 5 },
-        { x: gridSize * 3, y: gridSize * 5 }
-    ];
-    direction = { x: gridSize, y: 0 };
-    score = 0;
-    speed = 100;
-    generateFood();
-    backgroundMusic.play();
+// Move snake
+function moveSnake() {
+    const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+    snake.unshift(head);
+    if (snake[0].x === food.x && snake[0].y === food.y) {
+        eatFood();
+    } else {
+        snake.pop();
+    }
 }
 
-function gameOver() {
-    gameOverSound.play();
-    alert(`Game Over! Your score: ${score}`);
-    resetGame();
-}
-
-// Prevent default arrow key behavior
+// Handle arrow key presses
 document.addEventListener('keydown', e => {
-    e.preventDefault(); // Prevents default browser behavior for arrow keys
     switch (e.key) {
         case 'ArrowUp':
-            if (direction.y === 0) direction = { x: 0, y: -gridSize };
+            if (direction.y !== gridSize) {
+                direction = { x: 0, y: -gridSize };
+            }
             break;
         case 'ArrowDown':
-            if (direction.y === 0) direction = { x: 0, y: gridSize };
+            if (direction.y !== -gridSize) {
+                direction = { x: 0, y: gridSize };
+            }
             break;
         case 'ArrowLeft':
-            if (direction.x === 0) direction = { x: -gridSize, y: 0 };
+            if (direction.x !== gridSize) {
+                direction = { x: -gridSize, y: 0 };
+            }
             break;
         case 'ArrowRight':
-            if (direction.x === 0) direction = { x: gridSize, y: 0 };
+            if (direction.x !== -gridSize) {
+                direction = { x: gridSize, y: 0 };
+            }
             break;
     }
 });
@@ -137,15 +105,42 @@ function getRandomFoodPosition(max) {
 // Generate new food position
 function generateFood() {
     food = {
-        x: getRandomFoodPosition(canvas.width - boundaryPadding),
-        y: getRandomFoodPosition(canvas.height - boundaryPadding)
+        x: getRandomFoodPosition(canvasWidth - gridSize),
+        y: getRandomFoodPosition(canvasHeight - gridSize)
     };
+}
 
-    // Ensure food doesn't overlap with snake
-    while (snake.some(segment => segment.x === food.x && segment.y === food.y)) {
-        food.x = getRandomFoodPosition(canvas.width - boundaryPadding);
-        food.y = getRandomFoodPosition(canvas.height - boundaryPadding);
+// Handle eating food
+function eatFood() {
+    score++;
+    generateFood();
+}
+
+// Check collisions
+function checkCollision() {
+    // Check collision with walls
+    if (snake[0].x >= canvasWidth || snake[0].x < 0 || snake[0].y >= canvasHeight || snake[0].y < 0) {
+        return true;
     }
+
+    // Check collision with itself (excluding the head)
+    for (let i = 1; i < snake.length; i++) {
+        if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+// Reset game state
+function resetGame() {
+    snake = [{ x: 100, y: 100 }];
+    direction = { x: gridSize, y: 0 };
+    score = 0;
+    speed = 100;
+    level = 1;
+    generateFood();
 }
 
 // Start the game loop
