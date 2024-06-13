@@ -1,25 +1,21 @@
 body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
     margin: 0;
-    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background-image: url('background.jpg');
+    background-size: cover;
+}
+
+h1 {
+    position: absolute;
+    top: 10px;
+    color: white;
 }
 
 canvas {
-    display: block;
-    background-color: #f0f0f0;
-}
-
-.title {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    font: 24px Arial;
-    color: black;
-}
-
-.score {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    font: 18px Arial;
-    color: black;
+    border: 1px solid #000;
+    background-color: rgba(255, 255, 255, 0.8);
 }
