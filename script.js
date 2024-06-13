@@ -7,6 +7,8 @@ canvas.height = window.innerHeight;
 
 const boundaryPadding = 2 * gridSize; // Padding to ensure food appears within visible area
 
+const scoreTitleHeight = 50; // Height of score and title area
+
 let snake = [
     { x: gridSize * 5, y: gridSize * 5 },
     { x: gridSize * 4, y: gridSize * 5 },
@@ -40,17 +42,18 @@ function gameLoop() {
 function update() {
     const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
 
-    // Wrap around edges with full disappearance
+    // Wrap around horizontally
     if (head.x >= canvas.width) {
         head.x = 0;
     } else if (head.x < 0) {
         head.x = canvas.width - gridSize;
     }
     
-    if (head.y >= canvas.height) {
-        head.y = 0;
+    // Vertical wrapping logic
+    if (head.y >= canvas.height - scoreTitleHeight) {
+        head.y = 0; // Wrap from bottom to top
     } else if (head.y < 0) {
-        head.y = canvas.height - gridSize;
+        head.y = canvas.height - scoreTitleHeight - gridSize; // Wrap from top to bottom
     }
 
     // Check collision with obstacles or itself
@@ -180,7 +183,7 @@ function generateFood() {
     do {
         newFood = {
             x: getRandomFoodPosition(canvas.width - boundaryPadding),
-            y: getRandomFoodPosition(canvas.height - boundaryPadding)
+            y: getRandomFoodPosition(canvas.height - boundaryPadding - scoreTitleHeight)
         };
     } while (isFoodOnSnake(newFood) || isFoodOnObstacle(newFood));
 
