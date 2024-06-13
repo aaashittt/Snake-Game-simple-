@@ -124,6 +124,9 @@ function getRandomFoodPosition(max) {
 // Generate maze based on level
 function generateMaze(level) {
     let maze = [];
+const gridSize = 20; // Adjust this based on your game's grid size
+
+
 
     if (level === 1) {
         // Maze for level 1
