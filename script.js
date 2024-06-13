@@ -15,6 +15,10 @@ let level = 1;
 let speed = 100;
 let direction = { x: gridSize, y: 0 }; // Initial direction (right)
 
+// Title and score position
+const titlePosition = { x: 10, y: 10 };
+const scorePosition = { x: 10, y: 40 };
+
 // Game loop
 function gameLoop() {
     update();
@@ -26,7 +30,8 @@ function gameLoop() {
 function update() {
     moveSnake();
     if (checkCollision()) {
-        resetGame();
+        gameOver();
+        return;
     }
     if (snake[0].x === food.x && snake[0].y === food.y) {
         eatFood();
@@ -37,17 +42,15 @@ function update() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw title
-    ctx.fillStyle = 'black';
-    ctx.font = '24px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('Snake Game', canvasWidth / 2, 30);
-
     // Draw score
     ctx.fillStyle = 'black';
     ctx.font = '18px Arial';
-    ctx.textAlign = 'right';
-    ctx.fillText(`Score: ${score}`, canvasWidth - 20, 30);
+    ctx.fillText(`Score: ${score}`, scorePosition.x, scorePosition.y);
+
+    // Draw title
+    ctx.fillStyle = 'black';
+    ctx.font = '24px Arial';
+    ctx.fillText('Snake Game', titlePosition.x, titlePosition.y);
 
     // Draw snake
     ctx.fillStyle = 'green';
@@ -130,7 +133,46 @@ function checkCollision() {
         }
     }
 
+    // Check collision with title and score
+    const titleRect = {
+        x: titlePosition.x,
+        y: titlePosition.y - 24, // Adjust for font height
+        width: ctx.measureText('Snake Game').width,
+        height: 24
+    };
+    const scoreRect = {
+        x: scorePosition.x,
+        y: scorePosition.y - 18, // Adjust for font height
+        width: ctx.measureText(`Score: ${score}`).width,
+        height: 18
+    };
+
+    const snakeHeadRect = {
+        x: snake[0].x,
+        y: snake[0].y,
+        width: gridSize,
+        height: gridSize
+    };
+
+    if (rectIntersect(snakeHeadRect, titleRect) || rectIntersect(snakeHeadRect, scoreRect)) {
+        return true;
+    }
+
     return false;
+}
+
+// Rectangle intersection check
+function rectIntersect(r1, r2) {
+    return !(r2.x > (r1.x + r1.width) ||
+             (r2.x + r2.width) < r1.x ||
+             r2.y > (r1.y + r1.height) ||
+             (r2.y + r2.height) < r1.y);
+}
+
+// Game over
+function gameOver() {
+    alert('Game Over! Your score was ' + score);
+    resetGame();
 }
 
 // Reset game state
@@ -145,7 +187,3 @@ function resetGame() {
 
 // Start the game loop
 gameLoop();
-
-
-
-
