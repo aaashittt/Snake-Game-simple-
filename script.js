@@ -1,4 +1,3 @@
-
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -171,4 +170,34 @@ function handleTouch() {
     }
 }
 
+// Display the instructions
+function showInstructions() {
+    const instructions = document.createElement('div');
+    instructions.id = 'instructions';
+    instructions.style.position = 'fixed';
+    instructions.style.top = '10px';
+    instructions.style.left = '50%';
+    instructions.style.transform = 'translateX(-50%)';
+    instructions.style.padding = '10px';
+    instructions.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+    instructions.style.color = 'white';
+    instructions.style.fontSize = '18px';
+    instructions.style.borderRadius = '5px';
+    instructions.style.textAlign = 'center';
+    instructions.style.zIndex = '1000';
+    instructions.innerHTML = `
+        <p>Use arrow keys or swipe to move the snake</p>
+        <p>In this world, everybody is a winner. Enjoy!</p>
+    `;
+    document.body.appendChild(instructions);
+
+    // Remove the instructions after 5 seconds
+    setTimeout(() => {
+        instructions.style.transition = 'opacity 1s';
+        instructions.style.opacity = '0';
+        setTimeout(() => instructions.remove(), 1000);
+    }, 5000);
+}
+
+showInstructions();
 gameLoop();
