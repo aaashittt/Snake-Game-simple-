@@ -1,8 +1,8 @@
-
+// Define constants and variables
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-
+const gridSize = 20; // Adjust this based on your game's grid size
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
@@ -38,12 +38,14 @@ const backgroundMusic = new Audio('background.mp3'); // Example background music
 backgroundMusic.loop = true; // Loop the background music
 backgroundMusic.play();
 
+// Game loop
 function gameLoop() {
     update();
     draw();
     setTimeout(gameLoop, speed);
 }
 
+// Update game state
 function update() {
     const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
 
@@ -72,6 +74,7 @@ function update() {
     snake.unshift(head); // Add new head segment
 }
 
+// Draw game elements
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -98,6 +101,7 @@ function draw() {
     ctx.fillText(`Level: ${level}`, 10, 60);
 }
 
+// Reset the game state
 function resetGame() {
     snake = [
         { x: gridSize * 5, y: gridSize * 5 },
@@ -112,6 +116,7 @@ function resetGame() {
     backgroundMusic.play();
 }
 
+// Check if snake collides with maze walls
 function isSnakeCollidingWithMaze(position) {
     return maze.some(wall => wall.x === position.x && wall.y === position.y);
 }
@@ -124,239 +129,43 @@ function getRandomFoodPosition(max) {
 // Generate maze based on level
 function generateMaze(level) {
     let maze = [];
-const gridSize = 20; // Adjust this based on your game's grid size
 
-
-
+    // Simple maze generation for demonstration (customize as needed)
     if (level === 1) {
-        // Maze for level 1
         maze = [
-            { x: gridSize * 3, y: gridSize * 3 },
-            { x: gridSize * 3, y: gridSize * 4 },
-            { x: gridSize * 3, y: gridSize * 5 },
-            { x: gridSize * 3, y: gridSize * 6 },
-            { x: gridSize * 3, y: gridSize * 7 },
-            { x: gridSize * 3, y: gridSize * 8 },
-            { x: gridSize * 3, y: gridSize * 9 },
-            { x: gridSize * 3, y: gridSize * 10 },
-            { x: gridSize * 3, y: gridSize * 11 },
-            { x: gridSize * 3, y: gridSize * 12 },
-            { x: gridSize * 3, y: gridSize * 13 },
-            { x: gridSize * 3, y: gridSize * 14 },
-            { x: gridSize * 3, y: gridSize * 15 },
-            { x: gridSize * 3, y: gridSize * 16 },
-            { x: gridSize * 3, y: gridSize * 17 },
-            { x: gridSize * 3, y: gridSize * 18 },
-            { x: gridSize * 3, y: gridSize * 19 },
-            { x: gridSize * 3, y: gridSize * 20 }
+            { x: gridSize * 2, y: gridSize * 2 },
+            { x: gridSize * 2, y: gridSize * 3 },
+            { x: gridSize * 2, y: gridSize * 4 },
+            { x: gridSize * 2, y: gridSize * 5 },
+            { x: gridSize * 2, y: gridSize * 6 },
+            { x: gridSize * 2, y: gridSize * 7 },
+            { x: gridSize * 2, y: gridSize * 8 },
+            { x: gridSize * 2, y: gridSize * 9 },
+            { x: gridSize * 2, y: gridSize * 10 }
+            // Add more coordinates as per your level 1 maze
         ];
     } else if (level === 2) {
-        // Maze for level 2
         maze = [
-            { x: gridSize * 3, y: gridSize * 3 },
-            { x: gridSize * 3, y: gridSize * 4 },
-            { x: gridSize * 3, y: gridSize * 5 },
-            { x: gridSize * 3, y: gridSize * 6 },
-            { x: gridSize * 3, y: gridSize * 7 },
-            { x: gridSize * 3, y: gridSize * 8 },
-            { x: gridSize * 3, y: gridSize * 9 },
-            { x: gridSize * 3, y: gridSize * 10 },
-            { x: gridSize * 3, y: gridSize * 11 },
-            { x: gridSize * 3, y: gridSize * 12 },
-            { x: gridSize * 3, y: gridSize * 13 },
-            { x: gridSize * 3, y: gridSize * 14 },
-            { x: gridSize * 3, y: gridSize * 15 },
-            { x: gridSize * 3, y: gridSize * 16 },
-            { x: gridSize * 3, y: gridSize * 17 },
-            { x: gridSize * 3, y: gridSize * 18 },
-            { x: gridSize * 3, y: gridSize * 19 },
-            { x: gridSize * 3, y: gridSize * 20 },
-            { x: gridSize * 4, y: gridSize * 20 },
-            { x: gridSize * 5, y: gridSize * 20 },
-            { x: gridSize * 6, y: gridSize * 20 },
-            { x: gridSize * 7, y: gridSize * 20 },
-            { x: gridSize * 8, y: gridSize * 20 },
-            { x: gridSize * 9, y: gridSize * 20 },
-            { x: gridSize * 10, y: gridSize * 20 }
+            { x: gridSize * 2, y: gridSize * 2 },
+            { x: gridSize * 2, y: gridSize * 3 },
+            { x: gridSize * 2, y: gridSize * 4 },
+            { x: gridSize * 2, y: gridSize * 5 },
+            { x: gridSize * 2, y: gridSize * 6 },
+            { x: gridSize * 2, y: gridSize * 7 },
+            { x: gridSize * 2, y: gridSize * 8 },
+            { x: gridSize * 2, y: gridSize * 9 },
+            { x: gridSize * 2, y: gridSize * 10 }
+            // Add more coordinates as per your level 2 maze
         ];
-    } else if (level === 3) {
-        // Maze for level 3
-        maze = [
-            { x: gridSize * 3, y: gridSize * 3 },
-            { x: gridSize * 3, y: gridSize * 4 },
-            { x: gridSize * 3, y: gridSize * 5 },
-            { x: gridSize * 3, y: gridSize * 6 },
-            { x: gridSize * 3, y: gridSize * 7 },
-            { x: gridSize * 3, y: gridSize * 8 },
-            { x: gridSize * 3, y: gridSize * 9 },
-            { x: gridSize * 3, y: gridSize * 10 },
-            { x: gridSize * 3, y: gridSize * 11 },
-            { x: gridSize * 3, y: gridSize * 12 },
-            { x: gridSize * 3, y: gridSize * 13 },
-            { x: gridSize * 3, y: gridSize * 14 },
-            { x: gridSize * 3, y: gridSize * 15 },
-            { x: gridSize * 3, y: gridSize * 16 },
-            { x: gridSize * 3, y: gridSize * 17 },
-            { x: gridSize * 3, y: gridSize * 18 },
-            { x: gridSize * 3, y: gridSize * 19 },
-            { x: gridSize * 3, y: gridSize * 20 },
-            { x: gridSize * 4, y: gridSize * 20 },
-            { x: gridSize * 5, y: gridSize * 20 },
-            { x: gridSize * 6, y: gridSize * 20 },
-            { x: gridSize * 7, y: gridSize * 20 },
-            { x: gridSize * 8, y: gridSize * 20 },
-            { x: gridSize * 9, y: gridSize * 20 },
-            { x: gridSize * 10, y: gridSize * 20 },
-            { x: gridSize * 10, y: gridSize * 19 },
-            { x: gridSize * 10, y: gridSize * 18 },
-            { x: gridSize * 10, y: gridSize * 17 },
-            { x: gridSize * 10, y: gridSize * 16 },
-            { x: gridSize * 10, y: gridSize * 15 },
-            { x: gridSize * 10, y: gridSize * 14 },
-            { x: gridSize * 10, y: gridSize * 13 },
-            { x: gridSize * 10, y: gridSize * 12 },
-            { x: gridSize * 10, y: gridSize * 11 },
-            { x: gridSize * 10, y: gridSize * 10 },
-            { x: gridSize * 10, y: gridSize * 9 },
-            { x: gridSize * 10, y: gridSize * 8 },
-            { x: gridSize * 10, y: gridSize * 7 },
-            { x: gridSize * 10, y: gridSize * 6 },
-            { x: gridSize * 10, y: gridSize * 5 },
-            { x: gridSize * 10, y: gridSize * 4 },
-            { x: gridSize * 10, y: gridSize * 3 }
-        ];
-    }else if (level === 4) {
-    // Maze for level 4
-    maze = [
-        { x: gridSize * 3, y: gridSize * 3 },
-        { x: gridSize * 3, y: gridSize * 4 },
-        { x: gridSize * 3, y: gridSize * 5 },
-        { x: gridSize * 3, y: gridSize * 6 },
-        { x: gridSize * 3, y: gridSize * 7 },
-        { x: gridSize * 3, y: gridSize * 8 },
-        { x: gridSize * 3, y: gridSize * 9 },
-        { x: gridSize * 3, y: gridSize * 10 },
-        { x: gridSize * 3, y: gridSize * 11 },
-        { x: gridSize * 3, y: gridSize * 12 },
-        { x: gridSize * 3, y: gridSize * 13 },
-        { x: gridSize * 3, y: gridSize * 14 },
-        { x: gridSize * 3, y: gridSize * 15 },
-        { x: gridSize * 3, y: gridSize * 16 },
-        { x: gridSize * 3, y: gridSize * 17 },
-        { x: gridSize * 3, y: gridSize * 18 },
-        { x: gridSize * 3, y: gridSize * 19 },
-        { x: gridSize * 3, y: gridSize * 20 },
-        { x: gridSize * 4, y: gridSize * 20 },
-        { x: gridSize * 5, y: gridSize * 20 },
-        { x: gridSize * 6, y: gridSize * 20 },
-        { x: gridSize * 7, y: gridSize * 20 },
-        { x: gridSize * 8, y: gridSize * 20 },
-        { x: gridSize * 9, y: gridSize * 20 },
-        { x: gridSize * 10, y: gridSize * 20 },
-        { x: gridSize * 10, y: gridSize * 19 },
-        { x: gridSize * 10, y: gridSize * 18 },
-        { x: gridSize * 10, y: gridSize * 17 },
-        { x: gridSize * 10, y: gridSize * 16 },
-        { x: gridSize * 10, y: gridSize * 15 },
-        { x: gridSize * 10, y: gridSize * 14 },
-        { x: gridSize * 10, y: gridSize * 13 },
-        { x: gridSize * 10, y: gridSize * 12 },
-        { x: gridSize * 10, y: gridSize * 11 },
-        { x: gridSize * 10, y: gridSize * 10 },
-        { x: gridSize * 10, y: gridSize * 9 },
-        { x: gridSize * 10, y: gridSize * 8 },
-        { x: gridSize * 10, y: gridSize * 7 },
-        { x: gridSize * 10, y: gridSize * 6 },
-        { x: gridSize * 10, y: gridSize * 5 },
-        { x: gridSize * 10, y: gridSize * 4 },
-        { x: gridSize * 10, y: gridSize * 3 },
-        { x: gridSize * 4, y: gridSize * 3 },
-        { x: gridSize * 5, y: gridSize * 3 },
-        { x: gridSize * 6, y: gridSize * 3 },
-        { x: gridSize * 7, y: gridSize * 3 },
-        { x: gridSize * 8, y: gridSize * 3 },
-        { x: gridSize * 9, y: gridSize * 3 }
-    ];
-}else if (level === 5) {
-    // Maze for level 5
-    maze = [
-        { x: gridSize * 3, y: gridSize * 3 },
-        { x: gridSize * 3, y: gridSize * 4 },
-        { x: gridSize * 3, y: gridSize * 5 },
-        { x: gridSize * 3, y: gridSize * 6 },
-        { x: gridSize * 3, y: gridSize * 7 },
-        { x: gridSize * 3, y: gridSize * 8 },
-        { x: gridSize * 3, y: gridSize * 9 },
-        { x: gridSize * 3, y: gridSize * 10 },
-        { x: gridSize * 3, y: gridSize * 11 },
-        { x: gridSize * 3, y: gridSize * 12 },
-        { x: gridSize * 3, y: gridSize * 13 },
-        { x: gridSize * 3, y: gridSize * 14 },
-        { x: gridSize * 3, y: gridSize * 15 },
-        { x: gridSize * 3, y: gridSize * 16 },
-        { x: gridSize * 3, y: gridSize * 17 },
-        { x: gridSize * 3, y: gridSize * 18 },
-        { x: gridSize * 3, y: gridSize * 19 },
-        { x: gridSize * 3, y: gridSize * 20 },
-        { x: gridSize * 4, y: gridSize * 20 },
-        { x: gridSize * 5, y: gridSize * 20 },
-        { x: gridSize * 6, y: gridSize * 20 },
-        { x: gridSize * 7, y: gridSize * 20 },
-        { x: gridSize * 8, y: gridSize * 20 },
-        { x: gridSize * 9, y: gridSize * 20 },
-        { x: gridSize * 10, y: gridSize * 20 },
-        { x: gridSize * 10, y: gridSize * 19 },
-        { x: gridSize * 10, y: gridSize * 18 },
-        { x: gridSize * 10, y: gridSize * 17 },
-        { x: gridSize * 10, y: gridSize * 16 },
-        { x: gridSize * 10, y: gridSize * 15 },
-        { x: gridSize * 10, y: gridSize * 14 },
-        { x: gridSize * 10, y: gridSize * 13 },
-        { x: gridSize * 10, y: gridSize * 12 },
-        { x: gridSize * 10, y: gridSize * 11 },
-        { x: gridSize * 10, y: gridSize * 10 },
-        { x: gridSize * 10, y: gridSize * 9 },
-        { x: gridSize * 10, y: gridSize * 8 },
-        { x: gridSize * 10, y: gridSize * 7 },
-        { x: gridSize * 10, y: gridSize * 6 },
-        { x: gridSize * 10, y: gridSize * 5 },
-        { x: gridSize * 10, y: gridSize * 4 },
-        { x: gridSize * 10, y: gridSize * 3 },
-        { x: gridSize * 4, y: gridSize * 3 },
-        { x: gridSize * 5, y: gridSize * 3 },
-        { x: gridSize * 6, y: gridSize * 3 },
-        { x: gridSize * 7, y: gridSize * 3 },
-        { x: gridSize * 8, y: gridSize * 3 },
-        { x: gridSize * 9, y: gridSize * 3 },
-        { x: gridSize * 9, y: gridSize * 4 },
-        { x: gridSize * 9, y: gridSize * 5 },
-        { x: gridSize * 9, y: gridSize * 6 },
-        { x: gridSize * 9, y: gridSize * 7 },
-        { x: gridSize * 9, y: gridSize * 8 },
-        { x: gridSize * 9, y: gridSize * 9 },
-        { x: gridSize * 9, y: gridSize * 10 },
-        { x: gridSize * 9, y: gridSize * 11 },
-        { x: gridSize * 9, y: gridSize * 12 },
-        { x: gridSize * 9, y: gridSize * 13 },
-        { x: gridSize * 9, y: gridSize * 14 },
-        { x: gridSize * 9, y: gridSize * 15 },
-        { x: gridSize * 9, y: gridSize * 16 },
-        { x: gridSize * 9, y: gridSize * 17 },
-        { x: gridSize * 9, y: gridSize * 18 },
-        { x: gridSize * 9, y: gridSize * 19 },
-        { x: gridSize * 9, y: gridSize * 20 }
-    ];
-}
-    // Add more levels with increasing complexity as needed
+    }
+    // Add more levels as needed
 
     return maze;
 }
 
-}
-
-// Prevent default arrow key behavior
+// Handle arrow key controls
 document.addEventListener('keydown', e => {
-    e.preventDefault(); // Prevents default browser behavior for arrow keys
+    e.preventDefault(); // Prevent default arrow key behavior
     switch (e.key) {
         case 'ArrowUp':
             if (direction.y === 0) direction = { x: 0, y: -gridSize };
@@ -373,7 +182,7 @@ document.addEventListener('keydown', e => {
     }
 });
 
-// Touch controls
+// Handle touch controls for mobile devices
 let touchStartX = 0;
 let touchStartY = 0;
 let touchEndX = 0;
@@ -396,6 +205,7 @@ canvas.addEventListener('touchend', e => {
     handleTouch();
 });
 
+// Handle touch movement
 function handleTouch() {
     const diffX = touchEndX - touchStartX;
     const diffY = touchEndY - touchStartY;
@@ -411,24 +221,9 @@ function handleTouch() {
         // Vertical swipe
         if (diffY > 0 && direction.y === 0) {
             direction = { x: 0, y: gridSize }; // Swipe down
-        }
-                else if (diffY < 0 && direction.y === 0) {
+        } else if (diffY < 0 && direction.y === 0) {
             direction = { x: 0, y: -gridSize }; // Swipe up
         }
-    }
-}
-
-// Generate food at random position
-function generateFood() {
-    food = {
-        x: getRandomFoodPosition(canvas.width),
-        y: getRandomFoodPosition(canvas.height)
-    };
-    // Ensure food does not spawn on the snake or maze walls
-    while (snake.some(segment => segment.x === food.x && segment.y === food.y) ||
-        isSnakeCollidingWithMaze(food)) {
-        food.x = getRandomFoodPosition(canvas.width);
-        food.y = getRandomFoodPosition(canvas.height);
     }
 }
 
@@ -438,6 +233,7 @@ window.addEventListener('resize', () => {
     canvas.height = window.innerHeight;
     snakeBoundary.maxX = canvas.width - gridSize;
     snakeBoundary.maxY = canvas.height - gridSize;
+    draw(); // Redraw the game elements on resize
 });
 
 // Start the game loop
